@@ -782,7 +782,6 @@ void button_callback(uint gpio, uint32_t events) {
     }
 }
 
-
 int main() {
     stdio_init_all();
     init_display();

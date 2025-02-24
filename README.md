@@ -1,75 +1,89 @@
-# Projeto: Controle de LEDs e Display OLED com Joystick no RP2040
+# Projeto: Máquina de Conversões com RP2040
 
 ## Descrição Geral
 
-Este projeto implementa o controle de LEDs e um display **OLED SSD1306** utilizando um **joystick analógico** no microcontrolador **RP2040**, presente na placa **Raspberry Pi Pico**. O código foi desenvolvido utilizando **Pico SDK** no **VS Code**.
+Este projeto implementa uma **Máquina de Conversões** utilizando a placa **BitDogLab** com microcontrolador **RP2040**. O sistema permite a conversão entre diversas unidades de medida, proporcionando uma interface interativa por meio de um **display OLED SSD1306**, um **joystick analógico** e botões físicos. O projeto também inclui **efeitos sonoros e visuais** com um **buzzer** e um **LED RGB** para fornecer feedback ao usuário.
 
 ## Objetivos
 
-- **Controlar a intensidade de LEDs via PWM** utilizando o movimento do joystick.
-- **Alternar o LED verde e exibir um retângulo extra no display** ao pressionar o botão do joystick.
-- **Ativar e desativar o controle de LEDs via PWM** utilizando o Botão A.
-- **Exibir um cursor quadrado que se move com o joystick** dentro do retângulo no display.
+- **Facilitar a conversão entre diferentes unidades** de temperatura, comprimento, massa, área, tempo, volume e dados digitais.
+- **Fornecer uma interface intuitiva** para seleção de tipos e unidades de conversão.
+- **Implementar feedback visual e sonoro** utilizando um LED RGB e um buzzer.
 
 ## Componentes Utilizados
 
-- **Microcontrolador**: RP2040 (Raspberry Pi Pico)
-- **Display OLED SSD1306**: Comunicação via I2C (GPIO 14 - SDA, GPIO 15 - SCL)
+- **Microcontrolador**: RP2040 (Placa BitDogLab)
+- **Display OLED SSD1306**: Interface via I2C (GPIO 14 - SDA, GPIO 15 - SCL)
 - **Joystick Analógico**: Leitura via ADC (GPIO 26 - Eixo X, GPIO 27 - Eixo Y)
-- **LEDs**:
-  - LED Vermelho (GPIO 13 - PWM)
-  - LED Azul (GPIO 12 - PWM)
-  - LED Verde (GPIO 11 - Alternado pelo botão do joystick)
 - **Botões**:
-  - Botão do Joystick (GPIO 22)
-  - Botão A (GPIO 5)
+  - **Botão A** (GPIO 5): Confirma a seleção
+  - **Botão B** (GPIO 6): Retorna ao menu anterior
+- **Buzzer**: Indica confirmação de seleção e erros
+- **LED RGB**: Indica estados do sistema
 
 ## Funcionalidades Implementadas
 
-### 1. Controle da Intensidade dos LEDs por Joystick
-- **O eixo X do joystick controla o LED vermelho (GPIO 13).**
-- **O eixo Y do joystick controla o LED azul (GPIO 12).**
-- **Se o joystick estiver centralizado, os LEDs permanecem apagados.**
-- **A intensidade do PWM aumenta conforme o joystick se move para os extremos.**
+### 1. Navegação por Menu
 
-### 2. Controle do LED Verde e Retângulo no Display
-- **Ao pressionar o botão do joystick (GPIO 22), o LED verde (GPIO 11) é alternado.**
-- **O botão do joystick também alterna a exibição de um retângulo extra de 112x50 no display.**
+- O **joystick** é utilizado para navegar entre os menus e selecionar opções.
+- O **Botão A** confirma a seleção.
+- O **Botão B** permite retornar ao menu anterior.
 
-### 3. Ativação e Desativação do PWM pelo Botão A
-- **O Botão A (GPIO 5) ativa ou desativa o controle de intensidade dos LEDs via PWM.**
-- **Quando desativado, os LEDs vermelho e azul permanecem apagados independentemente do joystick.**
-- **Mensagens são exibidas no console para indicar o estado do PWM.**
+### 2. Seleção de Tipo de Conversão
 
-### 4. Movimento do Cursor Quadrado no Display
-- **Um cursor quadrado se move dentro do retângulo do display conforme o joystick é movimentado.**
-- **O cursor respeita os limites do retângulo e sua posição é recalculada dinamicamente.**
-- **Para exibir um quadrado em vez de um 'X', foi modificada a codificação hexadecimal correspondente à letra 'X' na biblioteca `font.h`, criando um quadrado de 4x4 pixels.**
+- **Temperatura** (Celsius, Kelvin, Fahrenheit)
+- **Comprimento** (km, m, cm, mm, µm)
+- **Massa** (toneladas, kg, g, mg)
+- **Área** (m², cm², mm², hectares)
+- **Tempo** (segundos, minutos, horas, dias, semanas)
+- **Volume** (litros, mililitros, cm³, m³)
+- **Dados Digitais** (bits, KB, MB, GB, TB)
+
+### 3. Conversão de Unidades
+
+- O usuário escolhe uma unidade inicial e uma unidade destino.
+- O valor é inserido via joystick.
+- A conversão é realizada automaticamente e exibida no display.
+
+### 4. Feedback Sonoro e Visual
+
+- **Buzzer**:
+  - Som curto ao confirmar seleção
+  - Som prolongado para erros
+- **LED RGB**:
+  - Verde: Operação bem-sucedida
+  - Vermelho: Erro na entrada
+  - Azul: Sistema aguardando interação
 
 ## Como Executar o Projeto
 
 ### 1. Configuração do Ambiente
+
 - Instale o **VS Code** e configure o **Pico SDK**.
-- Conecte a placa **Raspberry Pi Pico** ao computador via USB.
+- Conecte a placa **BitDogLab** ao computador via USB.
 
 ### 2. Compilação e Execução
+
 - Compile o código e gere um arquivo `.uf2`.
-- Transfira o arquivo para a placa **Raspberry Pi Pico**.
+- Transfira o arquivo para a placa **BitDogLab**.
 - Utilize o **Serial Monitor** do VS Code para monitorar mensagens do programa.
 
 ### 3. Testes e Depuração
-- Movimente o **joystick** para controlar os **LEDs** e o **cursor quadrado no display**.
-- Pressione **o botão do joystick** para alternar o LED verde e o retângulo no display.
-- Pressione **o Botão A** para ativar ou desativar o controle de intensidade dos LEDs via PWM.
+
+- Navegue pelo menu e selecione um tipo de conversão.
+- Escolha as unidades e insira um valor.
+- Verifique a resposta no display.
+- Observe o feedback sonoro e visual.
 
 ## Estrutura do Projeto
 
-- `main.c`: Código principal do projeto.
+- `Maquina_de_conversoes.c` Código principal do projeto.
 - `ssd1306.h / ssd1306.c`: Biblioteca para controle do display OLED SSD1306.
-- `font.h`: Arquivo da fonte do display, onde a letra 'X' foi modificada para exibir um quadrado 4x4 pixels.
+- `conversoes.h / conversoes.c`: Implementação das funções de conversão.
+- `font.h`: Arquivo da fonte do display.
 - `README.md`: Documentação do projeto.
 
 ## Espaço para Vídeo de Demonstração
 
-https://drive.google.com/file/d/1Y_31HkVviEn3YsWpcRTKZkY9XlV5g-Zh/view?usp=drivesdk
+[ESPAÇO PARA VIDEO]
 

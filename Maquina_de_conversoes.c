@@ -197,7 +197,7 @@ void display_lista_medidas() {
         else
             sprintf(buffer, "%s", opcoes[i]);
 
-        ssd1306_draw_string(&ssd, buffer, 30, linha);
+        ssd1306_draw_string(&ssd, buffer, 15, linha);
         linha += 10;
     }
 

@@ -21,15 +21,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 include(pico_sdk_import.cmake)
-project(Tarefa_AD C CXX ASM)
+project(Maquina_de_conversoes C CXX ASM)
 pico_sdk_init()
-add_executable(Tarefa_AD Tarefa_AD.c inc/ssd1306.c)
-target_link_libraries(Tarefa_AD pico_stdlib 
+add_executable(Maquina_de_conversoes Maquina_de_conversoes.c inc/ssd1306.c)
+target_link_libraries(Maquina_de_conversoes pico_stdlib 
     hardware_adc 
     hardware_pwm
     hardware_i2c)
-pico_enable_stdio_usb(Tarefa_AD 1)
-pico_enable_stdio_uart(Tarefa_AD 1)
-pico_add_extra_outputs(Tarefa_AD)
+pico_enable_stdio_usb(Maquina_de_conversoes 1)
+pico_enable_stdio_uart(Maquina_de_conversoes 1)
+pico_add_extra_outputs(Maquina_de_conversoes)
 
 include_directories(${CMAKE_SOURCE_DIR}/inc)

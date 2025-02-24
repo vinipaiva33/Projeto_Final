@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = 'build/Tarefa_AD.uf2'
-elf = 'build/Tarefa_AD.elf'
+firmware = 'build/Maquina_de_conversoes.uf2'
+elf = 'build/Maquina_de_conversoes.elf'

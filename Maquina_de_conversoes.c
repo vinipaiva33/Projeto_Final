@@ -19,6 +19,7 @@
 #define BUTTON_BACK 6  // Botão será usado para voltar no menu
 #define VRX_PIN 26  // Eixo X do Joystick (ADC0)
 #define VRY_PIN 27  // Eixo Y do Joystick (ADC1)
+#define BUZZER_PIN 10  // Defina o pino do buzzer (pode ser 10 ou 21)
 
 #define DEADZONE 100  // Faixa de tolerância para considerar o joystick centralizado
 #define CENTER_VALUE 2048  // Valor central do ADC
@@ -75,6 +76,21 @@ void init_peripherals() {
     gpio_set_dir(BUTTON_BACK, GPIO_IN);
     gpio_pull_up(BUTTON_BACK);
 
+    gpio_init(BUZZER_PIN);
+    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+
+    // Inicializa os LEDs
+    gpio_init(11);
+    gpio_set_dir(11, GPIO_OUT);  // LED Verde como saída
+    gpio_put(11, 0);  // Inicialmente apagado
+
+    gpio_init(12);
+    gpio_set_dir(12, GPIO_OUT);  // LED Azul como saída
+    gpio_put(12, 1);  // Inicialmente apagado
+
+    gpio_init(13);
+    gpio_set_dir(13, GPIO_OUT);
+    gpio_put(13, 0);  // LED Vermelho apagado
 
     adc_init();
     adc_gpio_init(VRX_PIN);
@@ -84,6 +100,18 @@ void init_peripherals() {
 // Função para mapear valores do analógico
 int map_value(int value, int fromLow, int fromHigh, int toLow, int toHigh) {
     return (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow;
+}
+
+void tocar_buzzer(uint32_t frequencia, uint32_t duracao_ms) {
+    uint32_t periodo = 1000000 / (frequencia * 2);  // Calcula o tempo de meio ciclo em microssegundos
+    uint32_t ciclos = (duracao_ms * 1000) / (periodo * 2);  // Calcula quantos ciclos cabem no tempo total
+
+    for (uint32_t i = 0; i < ciclos; i++) {
+        gpio_put(BUZZER_PIN, 1);
+        busy_wait_us(periodo);
+        gpio_put(BUZZER_PIN, 0);
+        busy_wait_us(periodo);
+    }
 }
 
 void display_pagina_inicial() {
@@ -128,6 +156,10 @@ void display_tipo_conversao() {
             break;
     }
     
+    gpio_put(13, 0);  
+    gpio_put(12, 1);
+    gpio_put(11, 0);
+
     ssd1306_send_data(&ssd);
 }
 
@@ -200,6 +232,10 @@ void display_lista_medidas() {
         ssd1306_draw_string(&ssd, buffer, 15, linha);
         linha += 10;
     }
+
+    gpio_put(13, 0);  
+    gpio_put(12, 1);
+    gpio_put(11, 0);
 
     ssd1306_send_data(&ssd);
 }
@@ -281,6 +317,10 @@ void display_lista_conversao() {
         linha += 10;
     }
 
+    gpio_put(13, 0);  
+    gpio_put(12, 1);
+    gpio_put(11, 0);
+
     ssd1306_send_data(&ssd);
 }
 
@@ -350,6 +390,10 @@ void display_entrada_valor() {
         ssd1306_draw_string(&ssd, unidades[escolha], 5, 5);
     }
 
+    gpio_put(13, 1);  
+    gpio_put(12, 0);
+    gpio_put(11, 0); 
+
     // Exibe o valor centralizado na tela
     char buffer[10];
     sprintf(buffer, "%.1f", numero);
@@ -368,6 +412,10 @@ void display_resultado_centralizado(float resultado) {
 
     int largura_texto = strlen(buffer) * 6;  // Aproximadamente 6 pixels por caractere
     int x_centralizado = (128 - largura_texto) / 2;  // Centraliza no display de 128px
+
+    gpio_put(13, 0);  
+    gpio_put(12, 0);
+    gpio_put(11, 1); 
 
     ssd1306_fill(&ssd, false);  // Limpa a tela
     ssd1306_draw_string(&ssd, "RESULTADO:", 10, 5);  // Cabeçalho
@@ -697,6 +745,7 @@ void button_callback(uint gpio, uint32_t events) {
     last_interrupt_time = current_time;
 
     if (gpio == BUTTON_SELECT) {  // ✅ Botão A - Avançar/Selecionar
+        tocar_buzzer(2000, 50);  // Deve emitir um BIP de 200ms a 1kHz
         if (estado == MENU_INICIAL) {
             estado = SELECAO_TIPO;
             precisa_atualizar = true;
@@ -741,6 +790,7 @@ void button_callback(uint gpio, uint32_t events) {
         }
     } 
     else if (gpio == BUTTON_BACK) {  // ✅ Botão B - Voltar
+        tocar_buzzer(500, 50);  // Deve emitir um BIP de 200ms a 1kHz
         if (estado == SELECAO_TIPO) {
             estado = MENU_INICIAL;
             precisa_atualizar = true;

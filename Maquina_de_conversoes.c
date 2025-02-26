@@ -313,7 +313,7 @@ void display_lista_conversao() {
         else
             sprintf(buffer, "%s", opcoes[opcoes_filtradas[i]]);
 
-        ssd1306_draw_string(&ssd, buffer, 30, linha);
+        ssd1306_draw_string(&ssd, buffer, 15, linha);
         linha += 10;
     }
 

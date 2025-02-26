@@ -209,6 +209,10 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
   {
     index = 71 * 8;  // Índice para o caractere '<' representando uma <-
   }
+  else if (c == '+') // Para o caractere '+'
+  {
+    index = 72 * 8;  // Índice para o caractere '+'
+  }
   for (uint8_t i = 0; i < 8; ++i)
   {
     uint8_t line = font[index + i];
